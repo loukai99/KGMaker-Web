@@ -287,14 +287,14 @@ export default {
       document.getElementById("blank_menubar").style.display = 'none'
     },
     graphContainerRightClick(event) {
-      // this.svg.selectAll(".buttongroup").classed("circle_opreate", true);
-      // var left = event.clientX;
-      // var top = event.clientY;
-      // document.getElementById('blank_menubar').style.position = 'absolute';
-      // document.getElementById('blank_menubar').style.left = left + 'px';
-      // document.getElementById('blank_menubar').style.top = top + 'px';
-      // document.getElementById('blank_menubar').style.display = "block";
-      // event.preventDefault();
+      this.svg.selectAll(".buttongroup").classed("circle_opreate", true);
+      var left = event.clientX;
+      var top = event.clientY;
+      document.getElementById('blank_menubar').style.position = 'absolute';
+      document.getElementById('blank_menubar').style.left = left + 'px';
+      document.getElementById('blank_menubar').style.top = top + 'px';
+      document.getElementById('blank_menubar').style.display = "block";
+      event.preventDefault();
     },
     graphContainerClick(event) {
       if (event.target.tagName !== "circle"&&event.target.tagName !== "link") {
