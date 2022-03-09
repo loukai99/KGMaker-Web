@@ -71,7 +71,7 @@
           <el-scrollbar class="mind-cen" id="graphcontainerdiv">
             <div id="nodedetail" class="node_detail">
               <h5>详细数据</h5>
-              <span class="node_pd" v-for="(m,k) in nodedetail">{{ k }}:{{ m }}</span>
+              <span class="node_pd" v-for="(m,k) in nodedetail" v-if="k!=='x' && k!=='y' && k!=='fx' && k!=='fy'&& k!=='r'&& k!=='vx'&& k!=='vy'&& k!=='color'&& k!=='index'&& k!=='fixed'">{{ k }}:{{ m }}</span>
             </div>
 
 
@@ -174,8 +174,6 @@ export default {
   data() {
     return {
       svg: null,
-      timer: null,
-      editor: null,
       simulation: null,
       linkGroup: null,
       linktextGroup: null,
@@ -185,7 +183,6 @@ export default {
       nodebuttonGroup: null,
       nodebuttonAction: '',
       tooltip: null,
-      tipsshow: true,
       txx: {},
       tyy: {},
       nodedetail: null,
@@ -193,11 +190,7 @@ export default {
       colorList: ["#ff8373", "#f9c62c", "#a5ca34", "#6fce7a", "#70d3bd", "#ea91b0"],
       color5: '#ff4500',
       predefineColors: ['#ff4500', '#ff8c00', '#90ee90', '#00ced1', '#1e90ff', '#c71585'],
-      defaultcr: 30,
-      activeName: '',
       dataconfigactive: '',
-      querywords: '',
-      operatetype: 0,
       isedit: false,
       isaddnode: false,
       isaddlink: false,
@@ -207,10 +200,6 @@ export default {
       selectnodename: '',
       selectsourcenodeid: 0,
       selecttargetnodeid: 0,
-      sourcenodex1: 0,
-      sourcenodey1: 0,
-      mousex: 0,
-      mousey: 0,
       domain: '',
       domainid: 0,
       nodename: '',
@@ -219,15 +208,6 @@ export default {
       cyphertextshow: false,
       jsonshow: false,
       propactiveName: 'propedit',
-      contentactiveName: 'propimage',
-      uploadimageparam: {},
-      nodeimagelist: [],
-      netimageurl: '',
-      dialogimageVisible: false,
-      propertyFormVisible: false,
-      dialogImageUrl: '',
-      showImageList: [],
-      editorcontent: '',
       properties: {},
       propertyCreate: false,
       selectnode: {
@@ -245,12 +225,8 @@ export default {
         nodes: [],
         links: []
       },
-      batchcreate: {
-        sourcenodename: '',
-        targetnodenames: '',
-        relation: '',
-      },
       graphEntity: {
+        fileID: "",
         uuid: 0,
         name: '',
         color: 'ff4500',
@@ -258,11 +234,14 @@ export default {
         x: "",
         y: ""
       },
-      uploadparam: {domain: ""},
-      domainlabels: [],
-      dialogFormVisible: false,
-      exportFormVisible: false,
       currentDomain: "无",
+      currentFile: {
+        file: true,
+        id: "",
+        leaf: true,
+        name: "",
+        pdf: ""
+      }
     };
   },
   filters: {
@@ -280,6 +259,11 @@ export default {
   },
 
   methods: {
+    doKG() {
+      this.getlabels();
+      this.initgraph();
+    },
+
     blankMenubarLeave() {
       document.getElementById("blank_menubar").style.display = 'none'
     },
@@ -333,7 +317,10 @@ export default {
         cancelButtonText: '取消'
       }).then(function (res) {
         value = res.value;
-        var data = {domain: value};
+        var data = {
+          fileID: _this.currentFile.id,
+          domain: value
+        };
         _this.$api.kgManager.createDomain(data).then((result) => {
           if (result.code === 200) {
             _this.getlabels();
@@ -359,7 +346,9 @@ export default {
 
     getlabels() {
       var _this = this;
-      var data = {};
+      var data = {
+        fileID: _this.currentFile.id
+      };
       _this.$api.kgManager.getGraph(data).then((result) => {
         if (result.code === 200) {
           _this.pageModel = result.data;
@@ -374,6 +363,7 @@ export default {
       var _this = this;
       _this.loading = true;
       var data = {
+        fileID: _this.currentFile.id,
         domain: _this.domain,
         nodename: _this.nodename,
         pageSize: _this.pagesize
@@ -406,7 +396,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function (res) {
-        var data = {domainid: id, domain: value};
+        var data = {
+          fileID: _this.currentFile.id,
+          domainid: id,
+          domain: value
+        };
         _this.$api.kgManager.deleteDomain(data).then((result) => {
           if (result.code === 200) {
             _this.getlabels();
@@ -432,7 +426,10 @@ export default {
     getmoredomain() {
       var _this = this;
       _this.pageModel.pageIndex = _this.pageModel.pageIndex + 1
-      var data = {pageIndex: _this.pageModel.pageIndex};
+      var data = {
+        fileID: _this.currentFile.id,
+        pageIndex: _this.pageModel.pageIndex
+      };
       _this.$api.kgManager.getGraph(data).then((result) => {
         if (result.code === 200) {
           _this.pageModel.nodeList.push.apply(_this.pageModel.nodeList, result.data.nodeList);
@@ -469,7 +466,10 @@ export default {
         _this.$message.error("请输入cypher语句");
         return;
       }
-      var data = {cypher: _this.cyphertext};
+      var data = {
+        fileID: _this.currentFile.id,
+        cypher: _this.cyphertext
+      };
       _this.$api.kgManager.getCypherResult(data).then((result) => {
         if (result.code === 200) {
           _this.graph.nodes = result.data.node;
@@ -786,7 +786,12 @@ export default {
     saveproperties() {
       // alert(JSON.stringify(this.properties))
       var _this = this;
-      var data = {label: _this.domain, id: _this.graphEntity.uuid, properties: JSON.stringify(_this.properties)};
+      var data = {
+        fileID: _this.currentFile.id,
+        label: _this.domain,
+        id: _this.graphEntity.uuid,
+        properties: JSON.stringify(_this.properties)
+      };
       _this.$api.kgManager.saveProperties(data).then((result) => {
         if (result.code === 200) {
           _this.$message({
@@ -810,6 +815,7 @@ export default {
       var _this = this;
       var data = _this.graphEntity;
       data.domain = _this.domain;
+      data.fileID = _this.currentFile.id;
       _this.$api.kgManager.createNode(data).then((result) => {
         if (result.code === 200) {
           if (_this.graphEntity.uuid !== 0) {
@@ -837,6 +843,7 @@ export default {
 
     resetentity() {
       this.graphEntity = {
+        fileID: this.currentFile.id,
         uuid: 0,
         color: 'ff4500',
         name: '',
@@ -918,7 +925,11 @@ export default {
 
     getProperties(type, id) {
       var _this = this;
-      var data = {label: type, id: id}
+      var data = {
+        fileID: _this.currentFile.id,
+        label: type,
+        id: id
+      };
       _this.$api.kgManager.getProperties(data).then((result) => {
         if (result.code === 200) {
           _this.properties = result.data;
@@ -931,7 +942,11 @@ export default {
 
     getcurrentnodeinfo(node) {
       var _this = this;
-      var data = {domain: _this.domain, nodeid: node.uuid};
+      var data = {
+        fileID: _this.currentFile.id,
+        domain: _this.domain,
+        nodeid: node.uuid
+      };
       _this.$api.kgManager.getRelationNodeCount(data).then((result) => {
         if (result.code === 200) {
           _this.selectnode.name = node.name;
@@ -944,7 +959,11 @@ export default {
 
     getmorenode(d) {
       var _this = this;
-      var data = {domain: d.type, nodeid: _this.selectnodeid};
+      var data = {
+        fileID: _this.currentFile.id,
+        domain: d.type,
+        nodeid: _this.selectnodeid
+      };
       _this.$api.kgManager.getMoreRelationNode(data).then((result) => {
         if (result.code === 200) {
           var newnodes = result.data.node;
@@ -983,7 +1002,11 @@ export default {
 
     createSingleNode() {
       var _this = this;
-      var data = {name: '', r: 30};
+      var data = {
+        fileID: _this.currentFile.id,
+        name: '',
+        r: 30
+      };
 
       _this.$prompt('请输入节点类型', '提示', {
         confirmButtonText: '确定',
@@ -1016,7 +1039,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function () {
-        var data = {domain: _this.domain, nodeid: _this.selectnodeid};
+        var data = {
+          fileID: _this.currentFile.id,
+          domain: _this.domain,
+          nodeid: _this.selectnodeid
+        };
         _this.$api.kgManager.deleteNode(data).then((result) => {
           if (result.code === 200) {
             _this.svg.selectAll(out_buttongroup_id).remove();
@@ -1068,7 +1095,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function () {
-        var data = {domain: _this.domain, shipid: _this.selectnodeid};
+        var data = {
+          fileID: _this.currentFile.id,
+          domain: _this.domain,
+          shipid: _this.selectnodeid
+        };
         _this.$api.kgManager.deleteLink(data).then((result) => {
           if (result.code === 200) {
             var j = -1;
@@ -1103,7 +1134,13 @@ export default {
         cancelButtonText: '取消',
         inputValue: this.selectlinkname
       }).then(function (res) {
-        var data = {domain: res.value, sourceid: sourceId, targetid: targetId, ship: ''};
+        var data = {
+          fileID: _this.currentFile.id,
+          domain: res.value,
+          sourceid: sourceId,
+          targetid: targetId,
+          ship: ''
+        };
         _this.$api.kgManager.createLink(data).then((result) => {
           if (result.code === 200) {
             var newship = result.data;
@@ -1125,7 +1162,12 @@ export default {
         inputValue: this.selectlinkname
       }).then(function (res) {
         value = res.value;
-        var data = {domain: _this.domain, shipid: _this.selectnodeid, shipname: value};
+        var data = {
+          fileID: _this.currentFile.id,
+          domain: _this.domain,
+          shipid: _this.selectnodeid,
+          shipname: value
+        };
         _this.$api.kgManager.updateLink(data).then((result) => {
           if (result.code === 200) {
             var newship = result.data;
@@ -1158,7 +1200,12 @@ export default {
         inputValue: d.name
       }).then(function (res) {
         value = res.value;
-        var data = {domain: d.type, nodeid: d.uuid, nodename: value};
+        var data = {
+          fileID: _this.currentFile.id,
+          domain: d.type,
+          nodeid: d.uuid,
+          nodename: value
+        };
         _this.$api.kgManager.getRelationNodeCount(data).then((result) => {
           if (result.code === 200) {
             if (d.uuid !== 0) {
