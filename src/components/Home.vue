@@ -237,7 +237,7 @@ export default {
       currentDomain: "无",
       currentFile: {
         file: true,
-        id: "",
+        id: "3",
         leaf: true,
         name: "",
         pdf: ""
@@ -813,9 +813,11 @@ export default {
 
     createnode() {
       var _this = this;
-      var data = _this.graphEntity;
-      data.domain = _this.domain;
-      data.fileID = _this.currentFile.id;
+      var data = {
+        domain: _this.domain,
+        fileID: _this.currentFile.id,
+        name: _this.graphEntity.name
+      };
       _this.$api.kgManager.createNode(data).then((result) => {
         if (result.code === 200) {
           if (_this.graphEntity.uuid !== 0) {
@@ -1005,7 +1007,6 @@ export default {
       var data = {
         fileID: _this.currentFile.id,
         name: '',
-        r: 30
       };
 
       _this.$prompt('请输入节点类型', '提示', {
