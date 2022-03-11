@@ -8,7 +8,7 @@ html,body,#app {height:100%;}
 .icon {width: 1em; height: 1em;vertical-align: -0.15em; fill: currentColor; overflow: hidden;}
 .clearfix:after { content: '\200B'; display: block; height: 0; clear: both;}
 .clearfix{*zoom: 1;}
-body{min-width:1300px;overflow-x: auto;--mc: #193446;--c:#156498;--lc:#bde4ff;--bj:#e9eff4;font:14px/1.45 "\5FAE\8F6F\96C5\9ED1";color:#333;background: #f7f9fc;}
+body{min-width:800px;overflow-x: auto;--mc: #193446;--c:#156498;--lc:#bde4ff;--bj:#e9eff4;font:14px/1.45 "\5FAE\8F6F\96C5\9ED1";color:#333;background: #f7f9fc;}
 .top-t{float:left;font-size: 24px;font-weight: normal; color:#fff;}
 .top-user{float:right;color:var(--lc);}
 .head-pic{display:inline-block;width:40px;height:40px;margin-right:8px;vertical-align: middle;border-radius: 50%;}
@@ -49,8 +49,8 @@ body .btn-bo:hover{color:#fff;background:#ee8407;border-color: #ff8a00;}
 }
 
 .mind-box{height: calc(100vh);overflow:hidden}
-.mind-l{width:300px;float:left;background:#f7f9fc;height:100%;border-right:1px solid #d3e2ec}
-.ml-ht{padding-top:20px;line-height:50px;font-size:16px;font-weight:400;text-align:center;color:#333;border-bottom:1px solid #d3e2ec}
+.mind-l{width:160px;float:left;background:#f7f9fc;height:100%;border-right:1px solid #d3e2ec}
+.ml-ht{padding-top:6px;line-height:32px;font-size:16px;font-weight:400;text-align:center;color:#333;border-bottom:1px solid #d3e2ec}
 .ml-a-box{margin:10px}
 .ml-a{display:inline-block;min-width: 46px;line-height: 1;padding: 6px 8px 6px 8px;margin: 0 4px 5px 0;background:#fff;border:1px solid #e3e3e3;box-sizing:border-box;transition:.3s;}
 .ml-a span{max-width:190px;display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
@@ -66,7 +66,7 @@ body .btn-bo:hover{color:#fff;background:#ee8407;border-color: #ff8a00;}
 .mt-m{color:#666;margin-right:30px}
 .mt-m i{font-size:18px;color:#333;font-weight:700;font-style:normal}
 .mb-con .search,.mind-top .search{border:1px solid #e2e2e2}
-.svg-a-sm{font-size:14px;color:#156498;margin-right:30px}
+.svg-a-sm{font-size:14px;color:#156498;margin-right:10px}
 .mind-cen {height:calc(100% - 70px);}
 .half-auto {height: 40%;}
 .mind-bottom{height:490px;box-sizing:border-box;border-top:1px solid #ededed;}
@@ -161,4 +161,12 @@ text {
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: middle;
+}
+
+.dibmr {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  margin: 20px;
+  text-align: center;
 }

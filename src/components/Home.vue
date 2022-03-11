@@ -1,23 +1,27 @@
 <template>
   <div @mousedown="globalMousedown">
     <div>
-      <div style="padding:10px">
-        <h2>知识图谱管理平台</h2>
-      </div>
       <div class="mind-box">
         <!-- 左侧 -->
         <el-scrollbar class="mind-l">
           <div class="ml-m">
-            <h2 class="ml-ht">图谱列表&nbsp;&nbsp;当前展示:{{ currentDomain }}</h2>
+            <div class="ml-ht">
+              <div style="font-weight:bold; color: #156498">
+                图谱列表
+              </div>
+              <div style="font-weight:bold;">
+                当前展示:{{ currentDomain }}
+              </div>
 
-
-            <div class="search">
-              <el-button @click="testFileID()">
-                <i class="el-icon-search"></i>
-              </el-button>
-              <el-input placeholder="请输入FileID" v-model="currentFile.id" @keyup.enter.native="testFileID"></el-input>
             </div>
 
+
+<!--            <div class="search" style="display: none">-->
+<!--              <el-button @click="testFileID()">-->
+<!--                <i class="el-icon-search"></i>-->
+<!--              </el-button>-->
+<!--              <el-input placeholder="请输入FileID" v-model="currentFile.id" @keyup.enter.native="testFileID"></el-input>-->
+<!--            </div>-->
 
             <div class="ml-a-box" style="min-height:280px">
               <el-button type="info" style="margin: 2px 0 4px 2px;" plain size="small" @click="createdomain">新建图谱
@@ -43,13 +47,7 @@
                 </el-button>
                 <el-input placeholder="请输入关键词" v-model="nodename" @keyup.enter.native="getdomaingraph"></el-input>
               </div>
-              <span v-show="domain!==''">
-                <span class="dibmr">
-                  <span>显示节点个数：</span>
-                  <a v-for="(m,index) in pagesizelist" @click="setmatchsize(m,this)" :title="m.size" href="javascript:void(0)"
-                     :class="[m.isactive ? 'sd-active' : '', 'sd']">{{ m.size }}</a>
-                </span>
-              </span>
+
             </div>
             <div class="fr">
 <!--              <a href="javascript:void(0)" @click="cypherjson" class="svg-a-sm">-->
@@ -67,7 +65,7 @@
             </div>
           </div>
           <div class="cypher_toolbar clearfix" v-show="cyphertextshow">
-            <div style="width: 80%;float: left">
+            <div style="width: 75%;float: left">
               <el-input type="textarea" :rows="2" placeholder="请输入Cypher" v-model="cyphertext"></el-input>
             </div>
             <div style="padding: 7px;">
@@ -90,6 +88,13 @@
             </el-scrollbar>
             <div id="graphcontainer" class="graphcontainer" @click.right="graphContainerRightClick" @click="graphContainerClick"></div>
           </el-scrollbar>
+          <span v-show="domain!==''">
+            <span class="dibmr">
+              <span>显示节点个数：</span>
+              <a v-for="(m,index) in pagesizelist" @click="setmatchsize(m,this)" :title="m.size" href="javascript:void(0)"
+                 :class="[m.isactive ? 'sd-active' : '', 'sd']">{{ m.size }}</a>
+            </span>
+          </span>
           <!-- 中部over -->
           <div class="svg-set-box"></div>
           <!-- 对话框-->
