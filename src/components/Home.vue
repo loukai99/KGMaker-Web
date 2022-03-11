@@ -9,6 +9,16 @@
         <el-scrollbar class="mind-l">
           <div class="ml-m">
             <h2 class="ml-ht">图谱列表&nbsp;&nbsp;当前展示:{{ currentDomain }}</h2>
+
+
+            <div class="search">
+              <el-button @click="testFileID()">
+                <i class="el-icon-search"></i>
+              </el-button>
+              <el-input placeholder="请输入FileID" v-model="currentFile.id" @keyup.enter.native="testFileID"></el-input>
+            </div>
+
+
             <div class="ml-a-box" style="min-height:280px">
               <el-button type="info" style="margin: 2px 0 4px 2px;" plain size="small" @click="createdomain">新建图谱
               </el-button>
@@ -237,7 +247,7 @@ export default {
       currentDomain: "无",
       currentFile: {
         file: true,
-        id: "3",
+        id: "",
         leaf: true,
         name: "",
         pdf: ""
@@ -259,9 +269,13 @@ export default {
   },
 
   methods: {
+    testFileID() {
+      this.doKG();
+    },
     doKG() {
       this.getlabels();
-      this.initgraph();
+      this.graph={nodes: [], links: []};
+      this.updategraph();
     },
 
     blankMenubarLeave() {
