@@ -186,6 +186,22 @@ export default {
   comments: {
     JsonViewer
   },
+  computed: {
+    fid () {
+      return this.$route.query.fid || ''
+    }
+  },
+  watch: {
+    fid: {
+      immediate: true,
+      handler (fid) {
+        this.currentFile.id = fid;
+        this.$nextTick(() => {
+          this.doKG();
+        })
+      }
+    }
+  },
   data() {
     return {
       svg: null,
@@ -270,7 +286,7 @@ export default {
   },
 
   created() {
-    this.getlabels();
+    // this.getlabels();
   },
 
   methods: {
