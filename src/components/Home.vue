@@ -27,7 +27,7 @@
               <el-button type="info" style="margin: 2px 0 4px 2px;" plain size="small" @click="createdomain">新建图谱
               </el-button>
               <a @click="matchdomaingraph(m,$event)" v-for="m in pageModel.nodeList" href="javascript:void(0)">
-                <el-tag closable style="margin:2px" @close="deletedomain(m.id,m.name)">{{ m.name }}</el-tag>
+                <el-tag closable style="margin:2px" @close="deletedomain(m.name)">{{ m.name }}</el-tag>
               </a>
               <el-button v-if="pageModel.pageIndex<pageModel.totalPage" type="info" style="margin: 2px 0 4px 2px;" plain
                          size="small" @click="getmoredomain">加载更多
@@ -98,28 +98,27 @@
           <!-- 中部over -->
           <div class="svg-set-box"></div>
           <!-- 对话框-->
-          <el-dialog id="editform" title="属性编辑" :visible.sync="isedit" width="30%">
-            <el-tabs type="card" tab-position="top" v-model="propactiveName" @tab-click="prophandleClick"
-                     style="margin: 10px">
+          <el-dialog id="editform" title="属性编辑" :visible.sync="isedit" >
+            <el-tabs type="card" tab-position="top" v-model="propactiveName" @tab-click="prophandleClick">
               <el-tab-pane label="UI编辑" name="propedit">
                 <el-form :model="graphEntity">
-                  <el-form-item label="节点名称" label-width="120px">
-                    <el-input v-model="graphEntity.name" style="width:324px"></el-input>
+                  <el-form-item label="节点名称" label-width="70px">
+                    <el-input v-model="graphEntity.name"></el-input>
                   </el-form-item>
-                  <el-form-item label="选择颜色" label-width="120px">
+                  <el-form-item label="选择颜色" label-width="70px">
                     <el-color-picker id="colorpicker"
                                      v-model="graphEntity.color" :predefine="predefineColors">
                     </el-color-picker>
                   </el-form-item>
-                  <el-form-item label="节点半径" label-width="120px">
-                    <el-slider v-model="graphEntity.r" style="width:324px"></el-slider>
+                  <el-form-item label="节点半径" label-width="70px">
+                    <el-slider v-model="graphEntity.r"></el-slider>
                   </el-form-item>
                 </el-form>
               </el-tab-pane>
               <el-tab-pane label="节点属性" name="properties">
                 <el-form :model="properties">
-                  <el-form-item v-for="(value, key) in properties" label-width="120px" :label="key" :key="key">
-                    <el-input style="width: 300px;" type="textarea" autosize v-model="properties[key]"></el-input>
+                  <el-form-item v-for="(value, key) in properties" label-width="70px" :label="key" :key="key">
+                    <el-input type="textarea" autosize v-model="properties[key]"></el-input>
                   </el-form-item>
                 </el-form>
               </el-tab-pane>
@@ -424,7 +423,7 @@ export default {
       this.getdomaingraph()
     },
 
-    deletedomain(id, value) {
+    deletedomain(value) {
       var _this = this;
       _this.$confirm('此操作将删除该标签及其下节点和关系(不可恢复), 是否继续?', '三思而后行', {
         confirmButtonText: '确定',
@@ -433,7 +432,6 @@ export default {
       }).then(function (res) {
         var data = {
           fileID: _this.currentFile.id,
-          domainid: id,
           domain: value
         };
         _this.$api.kgManager.deleteDomain(data).then((result) => {
@@ -1044,12 +1042,33 @@ export default {
         name: '',
       };
 
-      _this.$prompt('请输入节点类型', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValue: this.selectlinkname
-      }).then(function (res) {
-        data.domain = res.value;
+      if (_this.domain === "ALL" || _this.domain === "") {
+        _this.$prompt('请输入节点类型', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValue: this.selectlinkname
+        }).then(function (res) {
+          data.domain = res.value;
+          _this.$api.kgManager.createNode(data).then((result) => {
+            if (result.code === 200) {
+              d3.select('.graphcontainer').style("cursor", "");
+              var newnode = result.data;
+              newnode.x = _this.txx;
+              newnode.y = _this.tyy;
+              newnode.fx = _this.txx;
+              newnode.fy = _this.tyy;
+              _this.graph.nodes.push(newnode);
+              _this.updategraph();
+              _this.getlabels();
+            }
+          }).catch((e) => {
+            _this.$message.error("createSingleNode: "+e);
+          });
+        }).catch((e) => {
+          _this.$message.error(e);
+        });
+      } else {
+        data.domain = _this.domain;
         _this.$api.kgManager.createNode(data).then((result) => {
           if (result.code === 200) {
             d3.select('.graphcontainer').style("cursor", "");
@@ -1064,9 +1083,7 @@ export default {
         }).catch((e) => {
           _this.$message.error("createSingleNode: "+e);
         });
-      }).catch((e) => {
-        _this.$message.error(e);
-      });
+      }
     },
     deletenode(out_buttongroup_id) {
       var _this = this;
