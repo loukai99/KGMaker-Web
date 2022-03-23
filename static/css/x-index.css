@@ -55,7 +55,7 @@ body .btn-bo:hover{color:#fff;background:#ee8407;border-color: #ff8a00;}
 .ml-a{display:inline-block;min-width: 46px;line-height: 1;padding: 6px 8px 6px 8px;margin: 0 4px 5px 0;background:#fff;border:1px solid #e3e3e3;box-sizing:border-box;transition:.3s;}
 .ml-a span{max-width:190px;display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
 .ml-a-all {display: block; margin: 10px 10px 0;text-align: center;}
-.ml-a span:empty:before {content: "閺堫亜鎳￠崥锟�"; color: #adadad;}
+.ml-a span:empty:before { color: #adadad;}
 .ml-a small{color:#999}
 .ml-a:hover{background:#f4f4f4}
 .ml-a.cur,.ml-a.cur small{background:#156498;color:#fff}
