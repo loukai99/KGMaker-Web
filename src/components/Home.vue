@@ -1,4 +1,4 @@
-<template>
+<template xmlns="" xmlns="">
   <div @mousedown="globalMousedown">
     <div>
       <div class="mind-box">
@@ -16,12 +16,10 @@
             </div>
 
 
-<!--            <div class="search" style="display: none">-->
-<!--              <el-button @click="testFileID()">-->
-<!--                <i class="el-icon-search"></i>-->
-<!--              </el-button>-->
-<!--              <el-input placeholder="请输入FileID" v-model="currentFile.id" @keyup.enter.native="testFileID"></el-input>-->
-<!--            </div>-->
+            <div class="ml-a-box" style="min-height:48px; border-bottom:1px solid #d3e2ec">
+              <tag-editor :fileID="currentFile.id" :tagEditorShow="tagEditorShow" @tagEditorShow="tagEditorShowChange"/>
+              <el-button type="info" style="margin: 2px 0 4px 2px;" plain size="small" @click="tagEditorShow = true">文件标签编辑</el-button>
+            </div>
 
             <div class="ml-a-box" style="min-height:280px">
               <el-button type="info" style="margin: 2px 0 4px 2px;" plain size="small" @click="createdomain">新建图谱
@@ -98,6 +96,17 @@
           <!-- 中部over -->
           <div class="svg-set-box"></div>
           <!-- 对话框-->
+<!--          <el-dialog id="editform1" title="属性编辑" :visible.sync="tagEditorShow" >-->
+<!--            <el-form :model="graphEntity">-->
+<!--              <el-form-item label="节点名称" label-width="70px">-->
+<!--                <el-input v-model="graphEntity.name"></el-input>-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="节点半径" label-width="70px">-->
+<!--                <el-slider v-model="graphEntity.r"></el-slider>-->
+<!--              </el-form-item>-->
+<!--            </el-form>-->
+<!--          </el-dialog>-->
+
           <el-dialog id="editform" title="属性编辑" :visible.sync="isedit" >
             <el-tabs type="card" tab-position="top" v-model="propactiveName" @tab-click="prophandleClick">
               <el-tab-pane label="UI编辑" name="propedit">
@@ -140,12 +149,12 @@
               <el-button @click="resetsubmit">取消</el-button>
             </div>
           </el-dialog>
-          <el-dialog id="newProperty" title="新增属性" :visible.sync="propertyCreate" width="30%">
+          <el-dialog id="newProperty" title="新增属性" :visible.sync="propertyCreate">
             <el-form>
               <el-form-item label="新增属性名" inline>
-                <el-input id="newPropertyInput" style="width: 300px;" type="textarea" autosize></el-input>
-                <el-button @click="newProperty">确定</el-button>
+                <el-input id="newPropertyInput" style="width: 250px;" type="textarea" autosize></el-input>
               </el-form-item>
+              <el-button @click="newProperty">确定</el-button>
             </el-form>
           </el-dialog>
           <!-- 底部over -->
@@ -180,13 +189,19 @@ import JsonViewer from 'vue-json-viewer'
 import _ from 'lodash'
 import * as d3 from 'd3'
 
+import TagEditor from "./TagEditor";
+
 export default {
   name: "Home",
   comments: {
     JsonViewer
   },
+  components: {
+    TagEditor,
+  },
   data() {
     return {
+      tagEditorShow: false,
       svg: null,
       simulation: null,
       linkGroup: null,
@@ -201,8 +216,6 @@ export default {
       tyy: {},
       nodedetail: null,
       pagesizelist: [{size: 100, isactive: true}, {size: 500, isactive: false}, {size: 1000, isactive: false}, {size: 2000, isactive: false}],
-      colorList: ["#ff8373", "#f9c62c", "#a5ca34", "#6fce7a", "#70d3bd", "#ea91b0"],
-      color5: '#ff4500',
       predefineColors: ['#ff4500', '#ff8c00', '#90ee90', '#00ced1', '#1e90ff', '#c71585'],
       dataconfigactive: '',
       isedit: false,
@@ -273,6 +286,9 @@ export default {
   },
 
   methods: {
+    tagEditorShowChange(val) {
+      this.tagEditorShow = val
+    },
     testFileID() {
       this.doKG();
     },
