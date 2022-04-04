@@ -18,6 +18,7 @@
     </div>
     <div style="padding-bottom: 10px">
       <el-select
+        allow-create
         size="small"
         v-model="currentTagSuffix"
         filterable
