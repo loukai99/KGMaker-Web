@@ -1,5 +1,6 @@
 // 后台服务器地址
-export const baseUrl = 'http://localhost:8030'
+export const baseUrl = 'http://175.27.241.33:6006'
+// export const baseUrl = 'http://localhost:7080'
 // export const baseUrl = 'http://localhost:8001'
 
 export default {

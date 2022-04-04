@@ -209,6 +209,9 @@ export default {
   watch: {
     tagEditorShow: function (val) {
       this.$emit('tagEditorShow', val)
+    },
+    fileID: function() {
+      this.getFileTags();
     }
   }
 }
