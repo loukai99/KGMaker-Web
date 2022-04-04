@@ -12,13 +12,11 @@
               <div style="font-weight:bold;">
                 当前展示:{{ currentDomain }}
               </div>
-
             </div>
-
 
             <div class="ml-a-box" style="min-height:48px; border-bottom:1px solid #d3e2ec">
               <tag-editor :fileID="currentFile.id" :tagEditorShow="tagEditorShow" @tagEditorShow="tagEditorShowChange"/>
-              <el-button type="info" style="margin: 2px 0 4px 2px;" plain size="small" @click="tagEditorShow = true">文件标签编辑</el-button>
+              <el-button type="info" style="margin: 2px 0 4px 2px;" plain size="small" @click="tagEditorShow = true" :disabled="currentFile.id === ''">文件标签编辑</el-button>
             </div>
 
             <div class="ml-a-box" style="min-height:280px">
@@ -280,7 +278,7 @@ export default {
       currentDomain: "无",
       currentFile: {
         file: true,
-        id: "",
+        id: "1",
         leaf: true,
         name: "",
         pdf: ""

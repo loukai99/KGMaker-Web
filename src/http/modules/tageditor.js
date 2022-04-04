@@ -31,3 +31,11 @@ export const createLabel = (data) => {
     params: data
   })
 }
+
+export const getRelatedLabels = (data) => {
+  return axios({
+    url: '/getRelatedLabels',
+    method: 'post',
+    params: data
+  })
+}
