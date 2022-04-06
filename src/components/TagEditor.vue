@@ -56,7 +56,7 @@ export default {
   data(){
     return {
       currentTagSuffix: '',
-      currentTagPrefix: '',
+      currentTagPrefix: '默认',
       tagPrefix: [{
         label: '常用',
         options: [{
@@ -209,6 +209,7 @@ export default {
   },
   watch: {
     tagEditorShow: function (val) {
+      this.currentTagPrefix = '默认'
       this.$emit('tagEditorShow', val)
     },
     fileID: function() {
