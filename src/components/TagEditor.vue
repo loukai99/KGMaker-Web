@@ -60,7 +60,7 @@ export default {
       tagPrefix: [{
         label: '常用',
         options: [{
-          value: '模版',
+          value: '模板',
           label: '模板'
         }, {
           value: '历史文件',
