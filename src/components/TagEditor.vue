@@ -111,14 +111,14 @@ export default {
           let _tags = []
           for (const d of result.data) {
             let suffix
-            if (d.name.indexOf(':') != -1) {
-              suffix = d.name.split(":").slice(1)
+            if (d.indexOf(':') != -1) {
+              suffix = d.split(":").slice(1)
             } else {
-              suffix = d.name
+              suffix = d
             }
             let option = {
               value: suffix,
-              label: d.name
+              label: d
             }
             _tags.push(option);
           }
