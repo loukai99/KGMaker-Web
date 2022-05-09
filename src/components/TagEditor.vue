@@ -104,7 +104,7 @@ export default {
       let _this = this;
       let data = {
         input: query,
-        num: 20,
+        num: 10,
       }
       _this.$api.tagEditor.getRelatedLabels(data).then((result) => {
         if (result.code === 200) {
